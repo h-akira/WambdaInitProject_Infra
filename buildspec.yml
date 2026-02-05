@@ -1,0 +1,87 @@
+version: 0.2
+
+env:
+  variables:
+    # CDK deployment settings
+    CDK_DEFAULT_REGION: "ap-northeast-1"
+    CDK_EXECUTION_POLICIES_STACK_NAME: "stack-wambda-infra-cfn-execution-policies"
+  parameter-store:
+    ACM_ARN: /WambdaInit/Common/ACM/arn
+    CSR001_S3_BUCKET_NAME: /WambdaInit/CSR001/S3/contents/bucket_name
+    SSR001_S3_BUCKET_NAME: /WambdaInit/SSR001/S3/contents/bucket_name
+    SSR001_DYNAMODB_TABLE_NAME: /WambdaInit/SSR001/DynamoDB/main/table_name
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.13
+      nodejs: 20
+    commands:
+      - echo "Installing CDK CLI..."
+      - npm install -g aws-cdk
+      - echo "Creating Python virtual environment..."
+      - python -m venv .venv
+      - echo "Installing Python dependencies in virtual environment..."
+      - .venv/bin/pip install -r requirements.txt
+
+  pre_build:
+    commands:
+      - echo "Creating config.json from config_sample.json..."
+      - cp config_sample.json config.json
+      - echo "Replacing placeholder values in config.json..."
+      - sed -i "s|REPLACE_WITH_ACM_CERTIFICATE_ARN|${ACM_ARN}|g" config.json
+      - sed -i "s|REPLACE_WITH_CSR001_S3_BUCKET_NAME|${CSR001_S3_BUCKET_NAME}|g" config.json
+      - sed -i "s|REPLACE_WITH_SSR001_S3_BUCKET_NAME|${SSR001_S3_BUCKET_NAME}|g" config.json
+      - sed -i "s|REPLACE_WITH_SSR001_DYNAMODB_TABLE_NAME|${SSR001_DYNAMODB_TABLE_NAME}|g" config.json
+      - echo "Checking CDK version..."
+      - cdk --version
+      - echo "Checking if CDK bootstrap is required..."
+      - |
+        if ! aws cloudformation describe-stacks --stack-name CDKToolkit --region ${CDK_DEFAULT_REGION} 2>/dev/null; then
+          echo "CDKToolkit stack not found. Running CDK bootstrap..."
+
+          COGNITO_DYNAMODB_ARN=$(aws cloudformation describe-stacks \
+            --stack-name ${CDK_EXECUTION_POLICIES_STACK_NAME} \
+            --region ${CDK_DEFAULT_REGION} \
+            --query 'Stacks[0].Outputs[?OutputKey==`CognitoDynamoDBPolicyArn`].OutputValue' \
+            --output text)
+
+          STORAGE_ARN=$(aws cloudformation describe-stacks \
+            --stack-name ${CDK_EXECUTION_POLICIES_STACK_NAME} \
+            --region ${CDK_DEFAULT_REGION} \
+            --query 'Stacks[0].Outputs[?OutputKey==`StoragePolicyArn`].OutputValue' \
+            --output text)
+
+          CONFIG_ARN=$(aws cloudformation describe-stacks \
+            --stack-name ${CDK_EXECUTION_POLICIES_STACK_NAME} \
+            --region ${CDK_DEFAULT_REGION} \
+            --query 'Stacks[0].Outputs[?OutputKey==`ConfigPolicyArn`].OutputValue' \
+            --output text)
+
+          IAM_ARN=$(aws cloudformation describe-stacks \
+            --stack-name ${CDK_EXECUTION_POLICIES_STACK_NAME} \
+            --region ${CDK_DEFAULT_REGION} \
+            --query 'Stacks[0].Outputs[?OutputKey==`IAMPolicyArn`].OutputValue' \
+            --output text)
+
+          echo "Using CloudFormation execution policies from stack: ${CDK_EXECUTION_POLICIES_STACK_NAME}"
+
+          cdk bootstrap \
+            --cloudformation-execution-policies "${COGNITO_DYNAMODB_ARN},${STORAGE_ARN},${CONFIG_ARN},${IAM_ARN}" \
+            --region ${CDK_DEFAULT_REGION}
+        else
+          echo "CDKToolkit stack already exists. Skipping bootstrap."
+        fi
+      - echo "Listing CDK stacks..."
+      - cdk list
+
+  build:
+    commands:
+      - echo "Synthesizing CDK stacks..."
+      - cdk synth
+      - echo "Deploying all CDK stacks..."
+      - cdk deploy --all --require-approval never
+
+  post_build:
+    commands:
+      - echo "CDK deployment completed successfully!"

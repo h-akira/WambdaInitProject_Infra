@@ -1,0 +1,30 @@
+{
+  "account": null,
+  "region": "ap-northeast-1",
+  "environment": "production",
+
+  "cognito": {
+    "user_pool_name": "user-pool-wambda-common",
+    "client_name": "client-wambda-common",
+    "ssm_prefix": "/WambdaInit/Cognito"
+  },
+
+  "csr001": {
+    "domain_name": "csr001.wambda.example.com",
+    "acm_certificate_arn": "REPLACE_WITH_ACM_CERTIFICATE_ARN",
+    "s3_bucket_name": "REPLACE_WITH_CSR001_S3_BUCKET_NAME",
+    "s3_origin_path": "/CloudFront",
+    "backend_stack_name": "stack-wambda-csr001-backend"
+  },
+
+  "ssr001": {
+    "domain_name": "ssr001.wambda.example.com",
+    "acm_certificate_arn": "REPLACE_WITH_ACM_CERTIFICATE_ARN",
+    "s3_bucket_name": "REPLACE_WITH_SSR001_S3_BUCKET_NAME",
+    "s3_origin_path": "/CloudFront",
+    "backend_stack_name": "stack-wambda-ssr001-backend",
+    "dynamodb": {
+      "table_name": "REPLACE_WITH_SSR001_DYNAMODB_TABLE_NAME"
+    }
+  }
+}
