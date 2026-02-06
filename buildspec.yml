@@ -39,6 +39,13 @@ phases:
       - sed -i "s|REPLACE_WITH_SSR001_DYNAMODB_TABLE_NAME|${SSR001_DYNAMODB_TABLE_NAME}|g" config.json
       - echo "Checking CDK version..."
       - cdk --version
+      - echo "Deploying CloudFormation execution policies stack..."
+      - |
+        aws cloudformation deploy \
+          --template-file init/cfn-execution-policies.yaml \
+          --stack-name ${CDK_EXECUTION_POLICIES_STACK_NAME} \
+          --capabilities CAPABILITY_NAMED_IAM \
+          --region ${CDK_DEFAULT_REGION}
       - echo "Checking if CDK bootstrap is required..."
       - |
         if ! aws cloudformation describe-stacks --stack-name CDKToolkit --region ${CDK_DEFAULT_REGION} 2>/dev/null; then

@@ -288,6 +288,36 @@ Resources:
               - iam:PassRole
             Resource: !Sub 'arn:aws:iam::${AWS::AccountId}:role/stack-*'
 
+          - Sid: LambdaFunctionManagement
+            Effect: Allow
+            Action:
+              - lambda:CreateFunction
+              - lambda:DeleteFunction
+              - lambda:GetFunction
+              - lambda:GetFunctionConfiguration
+              - lambda:UpdateFunctionCode
+              - lambda:UpdateFunctionConfiguration
+              - lambda:ListVersionsByFunction
+              - lambda:PublishVersion
+              - lambda:InvokeFunction
+            Resource: !Sub 'arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:*'
+
+          - Sid: LambdaPermissionManagement
+            Effect: Allow
+            Action:
+              - lambda:AddPermission
+              - lambda:RemovePermission
+              - lambda:GetPolicy
+            Resource: !Sub 'arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:*'
+
+          - Sid: LambdaTags
+            Effect: Allow
+            Action:
+              - lambda:TagResource
+              - lambda:UntagResource
+              - lambda:ListTags
+            Resource: !Sub 'arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:*'
+
 Outputs:
   CognitoDynamoDBPolicyArn:
     Description: ARN of Cognito and DynamoDB policy
