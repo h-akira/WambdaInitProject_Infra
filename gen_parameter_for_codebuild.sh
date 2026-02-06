@@ -15,8 +15,22 @@ aws ssm put-parameter \
   --region "$REGION"
 
 aws ssm put-parameter \
+  --name /WambdaInit/CSR001/CloudFront/domain_name \
+  --value "$(jq -r '.csr001.domain_name' "$SCRIPT_DIR/config.json")" \
+  --type String \
+  --overwrite \
+  --region "$REGION"
+
+aws ssm put-parameter \
   --name /WambdaInit/CSR001/S3/contents/bucket_name \
   --value "$(jq -r '.csr001.s3_bucket_name' "$SCRIPT_DIR/config.json")" \
+  --type String \
+  --overwrite \
+  --region "$REGION"
+
+aws ssm put-parameter \
+  --name /WambdaInit/SSR001/CloudFront/domain_name \
+  --value "$(jq -r '.ssr001.domain_name' "$SCRIPT_DIR/config.json")" \
   --type String \
   --overwrite \
   --region "$REGION"

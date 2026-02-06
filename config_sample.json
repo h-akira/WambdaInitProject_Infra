@@ -10,7 +10,7 @@
   },
 
   "csr001": {
-    "domain_name": "csr001.wambda.example.com",
+    "domain_name": "REPLACE_WITH_CSR001_DOMAIN_NAME",
     "acm_certificate_arn": "REPLACE_WITH_ACM_CERTIFICATE_ARN",
     "s3_bucket_name": "REPLACE_WITH_CSR001_S3_BUCKET_NAME",
     "s3_origin_path": "/CloudFront",
@@ -18,7 +18,7 @@
   },
 
   "ssr001": {
-    "domain_name": "ssr001.wambda.example.com",
+    "domain_name": "REPLACE_WITH_SSR001_DOMAIN_NAME",
     "acm_certificate_arn": "REPLACE_WITH_ACM_CERTIFICATE_ARN",
     "s3_bucket_name": "REPLACE_WITH_SSR001_S3_BUCKET_NAME",
     "s3_origin_path": "/CloudFront",

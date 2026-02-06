@@ -7,7 +7,9 @@ env:
     CDK_EXECUTION_POLICIES_STACK_NAME: "stack-wambda-infra-cfn-execution-policies"
   parameter-store:
     ACM_ARN: /WambdaInit/Common/ACM/arn
+    CSR001_DOMAIN_NAME: /WambdaInit/CSR001/CloudFront/domain_name
     CSR001_S3_BUCKET_NAME: /WambdaInit/CSR001/S3/contents/bucket_name
+    SSR001_DOMAIN_NAME: /WambdaInit/SSR001/CloudFront/domain_name
     SSR001_S3_BUCKET_NAME: /WambdaInit/SSR001/S3/contents/bucket_name
     SSR001_DYNAMODB_TABLE_NAME: /WambdaInit/SSR001/DynamoDB/main/table_name
 
@@ -30,7 +32,9 @@ phases:
       - cp config_sample.json config.json
       - echo "Replacing placeholder values in config.json..."
       - sed -i "s|REPLACE_WITH_ACM_CERTIFICATE_ARN|${ACM_ARN}|g" config.json
+      - sed -i "s|REPLACE_WITH_CSR001_DOMAIN_NAME|${CSR001_DOMAIN_NAME}|g" config.json
       - sed -i "s|REPLACE_WITH_CSR001_S3_BUCKET_NAME|${CSR001_S3_BUCKET_NAME}|g" config.json
+      - sed -i "s|REPLACE_WITH_SSR001_DOMAIN_NAME|${SSR001_DOMAIN_NAME}|g" config.json
       - sed -i "s|REPLACE_WITH_SSR001_S3_BUCKET_NAME|${SSR001_S3_BUCKET_NAME}|g" config.json
       - sed -i "s|REPLACE_WITH_SSR001_DYNAMODB_TABLE_NAME|${SSR001_DYNAMODB_TABLE_NAME}|g" config.json
       - echo "Checking CDK version..."
