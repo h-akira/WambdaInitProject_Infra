@@ -22,7 +22,7 @@
     "acm_certificate_arn": "REPLACE_WITH_ACM_CERTIFICATE_ARN",
     "s3_bucket_name": "REPLACE_WITH_SSR001_S3_BUCKET_NAME",
     "s3_origin_path": "/CloudFront",
-    "backend_stack_name": "stack-wambda-ssr001-backend",
+    "backend_stack_name": "stack-wambda-ssr001-app",
     "dynamodb": {
       "table_name": "REPLACE_WITH_SSR001_DYNAMODB_TABLE_NAME"
     }
