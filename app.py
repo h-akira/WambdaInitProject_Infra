@@ -18,6 +18,7 @@ with open("config.json", "r") as f:
 account = config.get("account") or os.getenv("CDK_DEFAULT_ACCOUNT")
 region = config["region"]
 environment = config["environment"]
+hosted_zone_name = config["route53"]["hosted_zone_name"]
 
 app = cdk.App()
 
@@ -43,7 +44,7 @@ ssr001_dynamodb_stack = SSR001DynamoDBStack(
   description="DynamoDB table for WambdaInitProject SSR001",
 )
 
-# Stack 3: SSR001 Main (S3 + CloudFront)
+# Stack 3: SSR001 Main (S3 + CloudFront + Route53)
 # Deploy this after SAM stack (SSR001 backend) is deployed
 ssr001_main_stack = SSR001MainStack(
   app,
@@ -53,12 +54,13 @@ ssr001_main_stack = SSR001MainStack(
   s3_bucket_name=config["ssr001"]["s3_bucket_name"],
   s3_origin_path=config["ssr001"]["s3_origin_path"],
   backend_stack_name=config["ssr001"]["backend_stack_name"],
+  hosted_zone_name=hosted_zone_name,
   environment=environment,
   env=cdk.Environment(account=account, region=region),
-  description="S3 + CloudFront for WambdaInitProject SSR001",
+  description="S3 + CloudFront + Route53 for WambdaInitProject SSR001",
 )
 
-# Stack 4: CSR001 Main (S3 + CloudFront)
+# Stack 4: CSR001 Main (S3 + CloudFront + Route53)
 # Deploy this after SAM stack (CSR001 backend) is deployed
 csr001_main_stack = CSR001MainStack(
   app,
@@ -68,9 +70,10 @@ csr001_main_stack = CSR001MainStack(
   s3_bucket_name=config["csr001"]["s3_bucket_name"],
   s3_origin_path=config["csr001"]["s3_origin_path"],
   backend_stack_name=config["csr001"]["backend_stack_name"],
+  hosted_zone_name=hosted_zone_name,
   environment=environment,
   env=cdk.Environment(account=account, region=region),
-  description="S3 + CloudFront for WambdaInitProject CSR001 (Vue.js SPA)",
+  description="S3 + CloudFront + Route53 for WambdaInitProject CSR001 (Vue.js SPA)",
 )
 
 app.synth()

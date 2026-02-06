@@ -6,6 +6,7 @@ env:
     CDK_DEFAULT_REGION: "ap-northeast-1"
     CDK_EXECUTION_POLICIES_STACK_NAME: "stack-wambda-infra-cfn-execution-policies"
   parameter-store:
+    ROUTE53_HOSTED_ZONE_NAME: /WambdaInit/Common/Route53/hosted_zone_name
     ACM_ARN: /WambdaInit/Common/ACM/arn
     CSR001_DOMAIN_NAME: /WambdaInit/CSR001/CloudFront/domain_name
     CSR001_S3_BUCKET_NAME: /WambdaInit/CSR001/S3/contents/bucket_name
@@ -31,6 +32,7 @@ phases:
       - echo "Creating config.json from config_sample.json..."
       - cp config_sample.json config.json
       - echo "Replacing placeholder values in config.json..."
+      - sed -i "s|REPLACE_WITH_ROUTE53_HOSTED_ZONE_NAME|${ROUTE53_HOSTED_ZONE_NAME}|g" config.json
       - sed -i "s|REPLACE_WITH_ACM_CERTIFICATE_ARN|${ACM_ARN}|g" config.json
       - sed -i "s|REPLACE_WITH_CSR001_DOMAIN_NAME|${CSR001_DOMAIN_NAME}|g" config.json
       - sed -i "s|REPLACE_WITH_CSR001_S3_BUCKET_NAME|${CSR001_S3_BUCKET_NAME}|g" config.json

@@ -3,6 +3,10 @@
   "region": "ap-northeast-1",
   "environment": "production",
 
+  "route53": {
+    "hosted_zone_name": "REPLACE_WITH_ROUTE53_HOSTED_ZONE_NAME"
+  },
+
   "cognito": {
     "user_pool_name": "user-pool-wambda-common",
     "client_name": "client-wambda-common",

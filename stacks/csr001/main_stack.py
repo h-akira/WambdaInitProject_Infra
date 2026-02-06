@@ -4,6 +4,8 @@ from aws_cdk import (
   aws_cloudfront as cloudfront,
   aws_cloudfront_origins as origins,
   aws_certificatemanager as acm,
+  aws_route53 as route53,
+  aws_route53_targets as targets,
   aws_iam as iam,
   RemovalPolicy,
   CfnOutput,
@@ -28,6 +30,7 @@ class CSR001MainStack(Stack):
     s3_bucket_name: str,
     s3_origin_path: str,
     backend_stack_name: str,
+    hosted_zone_name: str,
     environment: str,
     **kwargs
   ) -> None:
@@ -133,6 +136,20 @@ class CSR001MainStack(Stack):
           }
         },
       )
+    )
+
+    # Lookup existing hosted zone
+    hosted_zone = route53.HostedZone.from_lookup(
+      self, "HostedZone",
+      domain_name=hosted_zone_name,
+    )
+
+    # Create Route53 A record pointing to CloudFront
+    route53.ARecord(
+      self, "CSR001AliasRecord",
+      zone=hosted_zone,
+      record_name=domain_name,
+      target=route53.RecordTarget.from_alias(targets.CloudFrontTarget(distribution)),
     )
 
     # Add tags

@@ -8,6 +8,13 @@ REGION=$(jq -r '.region' "$SCRIPT_DIR/config.json")
 echo "=== Creating SSM Parameters from config.json ==="
 
 aws ssm put-parameter \
+  --name /WambdaInit/Common/Route53/hosted_zone_name \
+  --value "$(jq -r '.route53.hosted_zone_name' "$SCRIPT_DIR/config.json")" \
+  --type String \
+  --overwrite \
+  --region "$REGION"
+
+aws ssm put-parameter \
   --name /WambdaInit/Common/ACM/arn \
   --value "$(jq -r '.csr001.acm_certificate_arn' "$SCRIPT_DIR/config.json")" \
   --type String \

@@ -2,7 +2,6 @@
 
 set -e
 
-AWS_PROFILE=wambda
 REGION=ap-northeast-1
 STACK_NAME=stack-wambda-infra-cfn-execution-policies
 
@@ -14,7 +13,6 @@ echo "Region: $REGION"
 echo ""
 
 aws cloudformation deploy \
-  --profile "$AWS_PROFILE" \
   --region "$REGION" \
   --template-file "$SCRIPT_DIR/cfn-execution-policies.yaml" \
   --stack-name "$STACK_NAME" \
