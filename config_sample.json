@@ -6,7 +6,7 @@
   "cognito": {
     "user_pool_name": "user-pool-wambda-common",
     "client_name": "client-wambda-common",
-    "ssm_prefix": "/WambdaInit/Cognito"
+    "ssm_prefix": "/Cognito"
   },
 
   "csr001": {
