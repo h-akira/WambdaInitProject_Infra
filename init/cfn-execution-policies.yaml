@@ -156,6 +156,17 @@ Resources:
               - cloudfront:ListTagsForResource
             Resource: '*'
 
+          - Sid: Route53RecordManagement
+            Effect: Allow
+            Action:
+              - route53:GetHostedZone
+              - route53:ListHostedZones
+              - route53:ListHostedZonesByName
+              - route53:GetChange
+              - route53:ChangeResourceRecordSets
+              - route53:ListResourceRecordSets
+            Resource: '*'
+
   # =====================================
   # Policy 3: SSM & ACM
   # =====================================

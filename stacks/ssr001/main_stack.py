@@ -50,8 +50,8 @@ class SSR001MainStack(Stack):
       self, "SSR001StaticBucket",
       bucket_name=s3_bucket_name,
       block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
-      removal_policy=RemovalPolicy.RETAIN,
-      auto_delete_objects=False,
+      removal_policy=RemovalPolicy.DESTROY,
+      auto_delete_objects=True,
     )
 
     # Import existing ACM certificate
